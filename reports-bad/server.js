@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// Mock data for different report types
+// ❌ DUPLICACIÓN EN SERVIDOR TAMBIÉN - Mismo generateReportData de tu código original
 const generateReportData = (type) => {
   const currentDate = new Date().toISOString().split('T')[0];
   
@@ -156,32 +156,29 @@ const generateReportData = (type) => {
   }
 };
 
-// API Routes
+// API Routes - Usando mismo sistema que tu server.js
 app.get('/api/report/:type', (req, res) => {
   const { type } = req.params;
   const reportData = generateReportData(type);
   
-  // Simulate processing time
   setTimeout(() => {
     if (reportData.error) {
       return res.status(400).json(reportData);
     }
     res.json(reportData);
-  }, 1000 + Math.random() * 2000); // 1-3 seconds delay
+  }, 1000 + Math.random() * 2000);
 });
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Serve index.html for root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
-  console.log(`📊 API de reportes disponible en /api/report/:type`);
+  console.log(`🚨 Servidor PROBLEMÁTICO ejecutándose en http://localhost:${PORT}`);
+  console.log(`❌ Código con Copy-And-Paste Programming`);
   console.log(`📋 Tipos disponibles: sales, inventory, customers, financial`);
 });

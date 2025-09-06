@@ -1,0 +1,18 @@
+{
+  "name": "reports-good",
+  "version": "2.0.0",
+  "description": "✅ Ejemplo refactorizado con patrones de diseño",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
+  },
+  "keywords": ["design-patterns", "refactoring", "clean-code", "template-method"],
+  "author": "Ejemplo Refactorizado",
+  "license": "MIT"
+}

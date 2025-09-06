@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ Generador de Reportes - Versión Refactorizada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Usar exactamente los mismos estilos que tienes pero con indicadores de mejora */
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-dark: #1d4ed8;
+            --color-success: #16a34a;
+            --color-warning: #ea580c;
+            --color-error: #dc2626;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-gray-100) 100%);
+            color: var(--color-gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: var(--color-gray-600);
+            font-weight: 400;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .report-button {
+            width: 100%;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.25rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-button:hover:not(:disabled) {
+            background: var(--color-primary-dark);
+            transform: scale(1.02);
+        }
+
+        .report-button:disabled {
+            background: var(--color-gray-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .report-button.loading {
+            color: transparent;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ffffff40;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .report-icon {
+            font-size: 1.5rem;
+        }
+
+        .report-info {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .report-info h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-gray-900);
+        }
+
+        .report-info p {
+            color: var(--color-gray-600);
+            font-size: 0.875rem;
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: var(--color-gray-900);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .results-header h2 {
+            font-size: 1.375rem;
+            font-weight: 600;
+        }
+
+        .clear-btn {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            background: #b91c1c;
+        }
+
+        .results-content {
+            padding: 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .results-display {
+            background: var(--color-gray-900);
+            color: #10b981;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            padding: 2rem;
+            white-space: pre-wrap;
+            margin: 0;
+            border: none;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--color-gray-600);
+            padding: 3rem;
+            font-style: italic;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: var(--color-error);
+            padding: 1rem 2rem;
+            border-left: 4px solid var(--color-error);
+            margin: 1rem 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-active {
+            background: var(--color-success);
+        }
+
+        .status-inactive {
+            background: var(--color-gray-300);
+        }
+
+        .status-loading {
+            background: var(--color-warning);
+            animation: pulse 2s infinite;
+        }
+
+        .status-error {
+            background: var(--color-error);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>✅ Generador de Reportes (Refactorizado)</h1>
+            <p>Implementación con Patrones de Diseño - 0% Duplicación</p>
+        </header>
+
+        <section class="reports-grid">
+            <div class="report-card">
+                <button class="report-button" onclick="generateSalesReport()" id="salesBtn">
+                    <span class="report-icon">💼</span>
+                    <span>Generar Reporte</span>
+                </button>
+                <div class="report-info">
+                    <h3>Reporte de Ventas</h3>
+                    <p>✅ Template Method + Factory Pattern</p>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <button class="report-button" onclick="generateInventoryReport()" id="inventoryBtn">
+                    <span class="report-icon">📦</span>
+                    <span>Generar Reporte</span>
+                </button>
+                <div class="report-info">
+                    <h3>Reporte de Inventario</h3>
+                    <p>✅ Solo lógica específica, sin duplicación</p>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <button class="report-button" onclick="generateCustomerReport()" id="customersBtn">
+                    <span class="report-icon">👥</span>
+                    <span>Generar Reporte</span>
+                </button>
+                <div class="report-info">
+                    <h3>Reporte de Clientes</h3>
+                    <p>✅ Servicios centralizados</p>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <button class="report-button" onclick="generateFinancialReport()" id="financialBtn">
+                    <span class="report-icon">💰</span>
+                    <span>Generar Reporte</span>
+                </button>
+                <div class="report-info">
+                    <h3>Reporte Financiero</h3>
+                    <p>✅ Observer Pattern para eventos</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-container">
+            <div class="results-header">
+                <h2>
+                    <span class="status-indicator status-inactive" id="statusIndicator"></span>
+                    Resultados del Reporte
+                </h2>
+                <button class="clear-btn" onclick="clearResults()" id="clearBtn" style="display: none;">
+                    Limpiar Pantalla
+                </button>
+            </div>
+            <div class="results-content">
+                <div class="no-results" id="noResults">
+                    ✅ Código refactorizado con 0% duplicación usando patrones de diseño...
+                </div>
+                <pre class="results-display" id="resultsDisplay" style="display: none;"></pre>
+            </div>
+        </section>
+    </div>
+
+    <!-- ✅ MÓDULOS ES6 - Sin duplicación -->
+    <script type="module" src="public/js/main.js"></script>
+</body>
+</html>

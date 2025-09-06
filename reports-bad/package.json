@@ -1,0 +1,17 @@
+{
+  "name": "reports-bad",
+  "version": "1.0.0",
+  "description": "❌ Ejemplo de Copy-And-Paste Programming",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
+  },
+  "keywords": ["antipattern", "copy-paste", "bad-code"],
+  "author": "Ejemplo Académico",
+  "license": "MIT"
+}
