@@ -462,16 +462,4 @@ this.buttonConfigs = {
 - [ ] Agregar Docker setup
 - [ ] Implementar CI/CD pipeline
 
-## 📄 Licencia
-
-MIT License - ver archivo [LICENSE](LICENSE) para detalles.
-
-## 📞 Contacto
-
-- **Email**: [tu-email@example.com]
-- **LinkedIn**: [tu-linkedin]
-- **GitHub**: [tu-github]
-
----
-
 ⭐ **¡Si este proyecto te ayudó a entender los patrones de diseño, dale una estrella!** ⭐
